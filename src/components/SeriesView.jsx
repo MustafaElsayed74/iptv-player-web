@@ -83,7 +83,6 @@ export default function SeriesView() {
         <>
           <div style={styles.grid}>
             {displayedSeries.map((seriesItem, index) => (
-            {displayedSeries.map((seriesItem, index) => (
             <div 
               key={`${seriesItem.id}-${index}`} 
               className="glass animate-fade-in"

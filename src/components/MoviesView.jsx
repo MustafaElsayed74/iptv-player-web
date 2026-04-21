@@ -80,7 +80,6 @@ export default function MoviesView() {
         <>
           <div style={styles.grid}>
             {displayedVods.map((movie, index) => (
-            {displayedVods.map((movie, index) => (
             <div 
               key={`${movie.id}-${index}`} 
               className="glass animate-fade-in"

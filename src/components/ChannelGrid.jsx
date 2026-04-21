@@ -22,7 +22,6 @@ export default function ChannelGrid() {
     <div style={styles.container}>
       <div style={styles.grid}>
         {displayedChannels.map((channel, index) => (
-        {displayedChannels.map((channel, index) => (
           <div 
             key={`${channel.id}-${index}`} 
             className="glass animate-fade-in"
