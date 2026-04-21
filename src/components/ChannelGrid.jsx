@@ -3,14 +3,21 @@
 import { Play, Heart } from 'lucide-react';
 import usePlaylistStore from '../store/PlaylistStore';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function ChannelGrid() {
   const { getFilteredChannels, setActiveChannel, activeChannel, toggleFavorite, favorites } = usePlaylistStore();
   const channels = getFilteredChannels();
   const [searchQuery, setSearchQuery] = useState('');
+  const [displayLimit, setDisplayLimit] = useState(100);
 
-  const displayedChannels = channels.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredChannels = channels.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const displayedChannels = filteredChannels.slice(0, displayLimit);
+
+  // Reset limit when search changes
+  useEffect(() => { 
+    setDisplayLimit(100); 
+  }, [searchQuery, getFilteredChannels]);
 
   return (
     <div style={styles.container}>
@@ -79,6 +86,22 @@ export default function ChannelGrid() {
           </div>
         ))}
       </div>
+      
+      {filteredChannels.length > displayLimit && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+          <button 
+            onClick={() => setDisplayLimit(prev => prev + 100)}
+            style={{
+              background: 'var(--accent-color)', color: '#fff', border: 'none', 
+              padding: '0.75rem 2rem', borderRadius: 'var(--radius-full)', 
+              fontWeight: '600', cursor: 'pointer', transition: 'transform 0.2s'
+            }}
+            className="hover-lift"
+          >
+            Load More (Showing {displayLimit} of {filteredChannels.length})
+          </button>
+        </div>
+      )}
       
       {/* Add global styles for hover effects that React inline styles don't support well */}
       <style dangerouslySetInnerHTML={{__html: `
