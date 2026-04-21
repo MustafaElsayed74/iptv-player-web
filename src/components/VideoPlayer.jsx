@@ -157,14 +157,7 @@ export default function VideoPlayer() {
   };
 
   if (!activeChannel) {
-    return (
-      <div className="glass" style={{...styles.container, justifyContent: 'center', alignItems: 'center'}}>
-        <div style={{textAlign: 'center', color: 'var(--text-secondary)'}}>
-          <Play size={48} style={{opacity: 0.2, marginBottom: '1rem'}} />
-          <h2>Select a channel to start streaming</h2>
-        </div>
-      </div>
-    );
+    return null; // Handled by page.js conditionally
   }
 
   return (
@@ -232,7 +225,8 @@ export default function VideoPlayer() {
 
 const styles = {
   container: {
-    width: '100%',
+    height: '100%',
+    maxHeight: '100%',
     aspectRatio: '16/9',
     position: 'relative',
     borderRadius: 'var(--radius-lg)',

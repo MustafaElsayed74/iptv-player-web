@@ -11,7 +11,7 @@ import usePlaylistStore from '../store/PlaylistStore';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const { channels, xtreamCredentials, activeSection, activeViewMode } = usePlaylistStore();
+  const { channels, xtreamCredentials, activeSection, activeViewMode, activeChannel } = usePlaylistStore();
   const [mounted, setMounted] = useState(false);
 
   // Avoid hydration mismatch by waiting for mount before rendering persistent state dependent UI
@@ -32,9 +32,12 @@ export default function Home() {
           <MediaDetailView />
         ) : (
           <>
-            <div style={styles.playerSection}>
-              <VideoPlayer />
-            </div>
+            {/* Only show the player when an active channel is playing to maximize grid space */}
+            {activeChannel && (
+              <div style={styles.playerSection}>
+                <VideoPlayer />
+              </div>
+            )}
             <div style={styles.gridSection}>
               {activeSection === 'movies' && <MoviesView />}
               {activeSection === 'series' && <SeriesView />}
@@ -67,6 +70,10 @@ const styles = {
     maxWidth: '1200px',
     margin: '0 auto',
     width: '100%',
+    maxHeight: '40vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   gridSection: {
     flex: 1,
