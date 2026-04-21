@@ -30,17 +30,17 @@ export default function VideoPlayer() {
     const isFileStream = activeChannel.url.includes('.mp4') || activeChannel.url.includes('.mkv') || activeChannel.url.includes('.avi');
 
     if (!isFileStream && Hls.isSupported()) {
-      // "Perfect Tech" Live Configuration
+      // Relaxed Configuration for universal stability (both premium & unstable public streams)
       hls = new Hls({
-        maxBufferLength: 30,             // Target forward buffer
-        maxMaxBufferLength: 60,          // Maximum memory buffer
-        liveSyncDurationCount: 3,        // Lock onto the live edge (offset 3 segments)
-        liveMaxLatencyDurationCount: 10, // Hard reset if latency trails too far
-        enableWorker: true,              // Multithreaded chunk decryption
-        lowLatencyMode: true,            // Ultra-low latency mode
-        fragLoadingTimeOut: 20000,       // 20s timeout for slow streams
-        manifestLoadingTimeOut: 10000,   // 10s timeout for playlists
-        levelLoadingTimeOut: 10000,
+        maxBufferLength: 60,             // Larger forward buffer for slower streams
+        maxMaxBufferLength: 120,         // Maximum memory buffer
+        liveSyncDurationCount: 5,        // Looser live edge sync
+        liveMaxLatencyDurationCount: 15, // Tolerate more latency before hard resetting
+        enableWorker: true,              
+        lowLatencyMode: false,           // Disabled to prevent aggressive syncing loops on iptv-org
+        fragLoadingTimeOut: 30000,       // 30s timeout for slow public streams
+        manifestLoadingTimeOut: 20000,   
+        levelLoadingTimeOut: 20000,
       });
       
       // We append &ext=.m3u8 to trick hls.js into always identifying the proxy as a valid playlist file
