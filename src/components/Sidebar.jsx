@@ -1,6 +1,6 @@
 'use client';
 
-import { Tv, List, Grid, MonitorPlay, Trash2, Film, Clapperboard, Medal } from 'lucide-react';
+import { Tv, List, Grid, MonitorPlay, Trash2, Film, Clapperboard, Medal, Heart } from 'lucide-react';
 import usePlaylistStore from '../store/PlaylistStore';
 
 export default function Sidebar() {
@@ -57,6 +57,17 @@ export default function Sidebar() {
       <div style={styles.nav}>
         <h3 style={styles.navTitle}>Categories</h3>
         <ul style={styles.list}>
+          {/* Persistent Favorites Tab */}
+          <li style={{...styles.listItem, ...(activeGroup === 'Favorites' ? styles.activeItem : {})}}>
+            <button 
+              onClick={() => setActiveGroup('Favorites')}
+              style={styles.btn}
+            >
+              <Heart size={18} color={activeGroup === 'Favorites' ? 'var(--accent-color)' : 'currentColor'} fill={activeGroup === 'Favorites' ? 'var(--accent-color)' : 'none'} />
+              <span style={styles.groupText}>Favorites</span>
+            </button>
+          </li>
+          
           {navGroups.map((group) => (
             <li key={group} style={{...styles.listItem, ...(activeGroup === group ? styles.activeItem : {})}}>
               <button 

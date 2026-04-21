@@ -1,11 +1,11 @@
 'use client';
 
-import { Play, Film } from 'lucide-react';
+import { Play, Film, Heart } from 'lucide-react';
 import usePlaylistStore from '../store/PlaylistStore';
 import { useState } from 'react';
 
 export default function MoviesView() {
-  const { getFilteredChannels, setActiveChannel, activeChannel, xtreamCredentials, setVods } = usePlaylistStore();
+  const { getFilteredChannels, setActiveMediaItem, activeMediaItem, xtreamCredentials, setVods, toggleFavorite, favorites } = usePlaylistStore();
   const vods = getFilteredChannels();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -90,9 +90,9 @@ export default function MoviesView() {
               className="glass animate-fade-in"
               style={{
                 ...styles.card,
-                ...(activeChannel?.id === movie.id ? styles.activeCard : {})
+                ...(activeMediaItem?.id === movie.id ? styles.activeCard : {})
               }}
-              onClick={() => setActiveChannel(movie)}
+              onClick={() => setActiveMediaItem(movie)}
             >
               <div style={styles.posterWrapper}>
                 {movie.logo ? (
@@ -107,7 +107,7 @@ export default function MoviesView() {
                 <div 
                   style={{
                     ...styles.playOverlay, 
-                    opacity: activeChannel?.id === movie.id ? 1 : undefined
+                    opacity: activeMediaItem?.id === movie.id ? 1 : undefined
                   }} 
                   className="play-overlay"
                 >
@@ -115,6 +115,21 @@ export default function MoviesView() {
                     <Play size={20} color="#fff" style={{ marginLeft: '2px' }} />
                   </div>
                 </div>
+
+                {/* Heart Toggle */}
+                <button 
+                  style={styles.heartBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(movie.id, 'movies');
+                  }}
+                >
+                  <Heart 
+                    size={18} 
+                    color={favorites.movies?.includes(movie.id) ? '#ef4444' : '#fff'}
+                    fill={favorites.movies?.includes(movie.id) ? '#ef4444' : 'rgba(0,0,0,0.5)'}
+                  />
+                </button>
               </div>
               
               <div style={styles.info}>
@@ -266,5 +281,16 @@ const styles = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+  },
+  heartBtn: {
+    position: 'absolute',
+    top: '8px',
+    right: '8px',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '4px',
+    zIndex: 10,
+    transition: 'transform 0.2s',
   }
 };

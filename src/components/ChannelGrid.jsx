@@ -1,12 +1,12 @@
 'use client';
 
-import { Play } from 'lucide-react';
+import { Play, Heart } from 'lucide-react';
 import usePlaylistStore from '../store/PlaylistStore';
 
 import { useState } from 'react';
 
 export default function ChannelGrid() {
-  const { getFilteredChannels, setActiveChannel, activeChannel } = usePlaylistStore();
+  const { getFilteredChannels, setActiveChannel, activeChannel, toggleFavorite, favorites } = usePlaylistStore();
   const channels = getFilteredChannels();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -55,6 +55,21 @@ export default function ChannelGrid() {
                   <Play size={20} color="#fff" style={{ marginLeft: '2px' }} />
                 </div>
               </div>
+
+              {/* Heart Toggle */}
+              <button 
+                style={styles.heartBtn}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(channel.id, 'live');
+                }}
+              >
+                <Heart 
+                  size={18} 
+                  color={favorites.live?.includes(channel.id) ? '#ef4444' : '#fff'}
+                  fill={favorites.live?.includes(channel.id) ? '#ef4444' : 'rgba(0,0,0,0.5)'}
+                />
+              </button>
             </div>
             
             <div style={styles.info}>
@@ -182,5 +197,16 @@ const styles = {
     color: 'var(--text-secondary)',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
+  },
+  heartBtn: {
+    position: 'absolute',
+    top: '8px',
+    right: '8px',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '4px',
+    zIndex: 10,
+    transition: 'transform 0.2s',
   }
 };

@@ -14,7 +14,9 @@ const usePlaylistStore = create(
       seriesGroups: [],
 
       activeSection: 'live', // 'live', 'movies', 'series', 'sports'
-      activeChannel: null, // Also used for movie/series playback
+      activeChannel: null, // Stream playing in VideoPlayer
+      activeMediaItem: null, // Selected media for MediaDetailView
+      activeViewMode: 'grid', // 'grid', 'detail'
       activeGroup: 'All',
       
       xtreamCredentials: null,
@@ -40,7 +42,11 @@ const usePlaylistStore = create(
         set({ series, seriesGroups: ['All', ...uniqueGroups] });
       },
 
-      setActiveSection: (section) => set({ activeSection: section, activeGroup: 'All' }),
+      setActiveSection: (section) => set({ activeSection: section, activeGroup: 'All', activeViewMode: 'grid' }),
+      
+      setActiveMediaItem: (item) => set({ activeMediaItem: item, activeViewMode: 'detail' }),
+      
+      goBackToGrid: () => set({ activeViewMode: 'grid', activeMediaItem: null }),
       
       setActiveChannel: (channel) => {
         set((state) => {
@@ -56,22 +62,28 @@ const usePlaylistStore = create(
       
       clearPlaylist: () => set({ 
         channels: [], groups: [], vods: [], vodGroups: [], series: [], seriesGroups: [],
-        activeChannel: null, activeGroup: 'All', xtreamCredentials: null,
+        activeChannel: null, activeMediaItem: null, activeGroup: 'All', activeViewMode: 'grid', xtreamCredentials: null,
         favorites: { live: [], movies: [], series: [] },
         customLists: [], watchHistory: [], resumeProgress: {}, activeSection: 'live'
       }),
       
       getFilteredChannels: () => {
-        const { activeSection, activeGroup, channels, vods, series } = get();
+        const { activeSection, activeGroup, channels, vods, series, favorites } = get();
         let sourceList = channels;
         if (activeSection === 'movies') sourceList = vods;
         if (activeSection === 'series') sourceList = series;
         
         // Pseudo sports section by identifying live channels with 'sport' in group
         if (activeSection === 'sports') {
-           sourceList = channels.filter(c => c.group.toLowerCase().includes('sport'));
+           sourceList = channels.filter(c => c.group && c.group.toLowerCase().includes('sport'));
+           if (activeGroup === 'Favorites') return sourceList.filter(c => favorites.live.includes(c.id));
            if (activeGroup === 'All') return sourceList;
            return sourceList.filter(c => c.group === activeGroup);
+        }
+
+        if (activeGroup === 'Favorites') {
+           const favSection = activeSection === 'sports' ? 'live' : activeSection;
+           return sourceList.filter(c => favorites[favSection]?.includes(c.id));
         }
 
         if (activeGroup === 'All') return sourceList;

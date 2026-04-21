@@ -6,11 +6,12 @@ import VideoPlayer from '../components/VideoPlayer';
 import ChannelGrid from '../components/ChannelGrid';
 import MoviesView from '../components/MoviesView';
 import SeriesView from '../components/SeriesView';
+import MediaDetailView from '../components/MediaDetailView';
 import usePlaylistStore from '../store/PlaylistStore';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const { channels, xtreamCredentials, activeSection } = usePlaylistStore();
+  const { channels, xtreamCredentials, activeSection, activeViewMode } = usePlaylistStore();
   const [mounted, setMounted] = useState(false);
 
   // Avoid hydration mismatch by waiting for mount before rendering persistent state dependent UI
@@ -27,6 +28,8 @@ export default function Home() {
       <div style={styles.content}>
         {channels.length === 0 && !xtreamCredentials ? (
           <PlaylistUploader />
+        ) : activeViewMode === 'detail' ? (
+          <MediaDetailView />
         ) : (
           <>
             <div style={styles.playerSection}>

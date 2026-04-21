@@ -1,11 +1,11 @@
 'use client';
 
-import { Play, Clapperboard } from 'lucide-react';
+import { Play, Clapperboard, Heart } from 'lucide-react';
 import usePlaylistStore from '../store/PlaylistStore';
 import { useState } from 'react';
 
 export default function SeriesView() {
-  const { getFilteredChannels, setActiveChannel, activeChannel, xtreamCredentials, setSeries } = usePlaylistStore();
+  const { getFilteredChannels, setActiveMediaItem, activeMediaItem, xtreamCredentials, setSeries, toggleFavorite, favorites } = usePlaylistStore();
   const seriesList = getFilteredChannels(); // Uses PlaylistStore activeSection logic
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -93,9 +93,9 @@ export default function SeriesView() {
               className="glass animate-fade-in"
               style={{
                 ...styles.card,
-                ...(activeChannel?.id === seriesItem.id ? styles.activeCard : {})
+                ...(activeMediaItem?.id === seriesItem.id ? styles.activeCard : {})
               }}
-              onClick={() => setActiveChannel(seriesItem)}
+              onClick={() => setActiveMediaItem(seriesItem)}
             >
               <div style={styles.posterWrapper}>
                 {seriesItem.logo ? (
@@ -110,7 +110,7 @@ export default function SeriesView() {
                 <div 
                   style={{
                     ...styles.playOverlay, 
-                    opacity: activeChannel?.id === seriesItem.id ? 1 : undefined
+                    opacity: activeMediaItem?.id === seriesItem.id ? 1 : undefined
                   }} 
                   className="play-overlay"
                 >
@@ -118,6 +118,21 @@ export default function SeriesView() {
                     <Play size={20} color="#fff" style={{ marginLeft: '2px' }} />
                   </div>
                 </div>
+
+                {/* Heart Toggle */}
+                <button 
+                  style={styles.heartBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(seriesItem.id, 'series');
+                  }}
+                >
+                  <Heart 
+                    size={18} 
+                    color={favorites.series?.includes(seriesItem.id) ? '#ef4444' : '#fff'}
+                    fill={favorites.series?.includes(seriesItem.id) ? '#ef4444' : 'rgba(0,0,0,0.5)'}
+                  />
+                </button>
               </div>
               
               <div style={styles.info}>
@@ -269,5 +284,16 @@ const styles = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+  },
+  heartBtn: {
+    position: 'absolute',
+    top: '8px',
+    right: '8px',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '4px',
+    zIndex: 10,
+    transition: 'transform 0.2s',
   }
 };
