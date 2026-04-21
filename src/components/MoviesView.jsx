@@ -2,7 +2,7 @@
 
 import { Play, Film, Heart } from 'lucide-react';
 import usePlaylistStore from '../store/PlaylistStore';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function MoviesView() {
   const { getFilteredChannels, setActiveMediaItem, activeMediaItem, xtreamCredentials, setVods, toggleFavorite, favorites, globalSearchQuery } = usePlaylistStore();

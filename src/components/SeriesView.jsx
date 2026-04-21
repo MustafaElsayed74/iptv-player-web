@@ -2,7 +2,7 @@
 
 import { Play, Clapperboard, Heart } from 'lucide-react';
 import usePlaylistStore from '../store/PlaylistStore';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function SeriesView() {
   const { getFilteredChannels, setActiveMediaItem, activeMediaItem, xtreamCredentials, setSeries, toggleFavorite, favorites, globalSearchQuery } = usePlaylistStore();
