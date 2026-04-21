@@ -129,8 +129,8 @@ export default function SeriesView() {
                 >
                   <Heart 
                     size={18} 
-                    color={favorites.series?.includes(seriesItem.id) ? '#ef4444' : '#fff'}
-                    fill={favorites.series?.includes(seriesItem.id) ? '#ef4444' : 'rgba(0,0,0,0.5)'}
+                    color={(favorites || {}).series?.includes(seriesItem.id) ? '#ef4444' : '#fff'}
+                    fill={(favorites || {}).series?.includes(seriesItem.id) ? '#ef4444' : 'rgba(0,0,0,0.5)'}
                   />
                 </button>
               </div>

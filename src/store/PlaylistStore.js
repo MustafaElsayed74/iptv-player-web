@@ -69,21 +69,23 @@ const usePlaylistStore = create(
       
       getFilteredChannels: () => {
         const { activeSection, activeGroup, channels, vods, series, favorites } = get();
-        let sourceList = channels;
-        if (activeSection === 'movies') sourceList = vods;
-        if (activeSection === 'series') sourceList = series;
+        const safeFavorites = favorites || { live: [], movies: [], series: [] };
+        
+        let sourceList = channels || [];
+        if (activeSection === 'movies') sourceList = vods || [];
+        if (activeSection === 'series') sourceList = series || [];
         
         // Pseudo sports section by identifying live channels with 'sport' in group
         if (activeSection === 'sports') {
-           sourceList = channels.filter(c => c.group && c.group.toLowerCase().includes('sport'));
-           if (activeGroup === 'Favorites') return sourceList.filter(c => favorites.live.includes(c.id));
+           sourceList = sourceList.filter(c => c.group && c.group.toLowerCase().includes('sport'));
+           if (activeGroup === 'Favorites') return sourceList.filter(c => safeFavorites.live?.includes(c.id));
            if (activeGroup === 'All') return sourceList;
            return sourceList.filter(c => c.group === activeGroup);
         }
 
         if (activeGroup === 'Favorites') {
            const favSection = activeSection === 'sports' ? 'live' : activeSection;
-           return sourceList.filter(c => favorites[favSection]?.includes(c.id));
+           return sourceList.filter(c => safeFavorites[favSection]?.includes(c.id));
         }
 
         if (activeGroup === 'All') return sourceList;
@@ -92,11 +94,12 @@ const usePlaylistStore = create(
 
       // Favourites operations
       toggleFavorite: (id, section) => set((state) => {
-         const secFavs = state.favorites[section] || [];
+         const currentFavorites = state.favorites || { live: [], movies: [], series: [] };
+         const secFavs = currentFavorites[section] || [];
          if (secFavs.includes(id)) {
-           return { favorites: { ...state.favorites, [section]: secFavs.filter(fid => fid !== id) }};
+           return { favorites: { ...currentFavorites, [section]: secFavs.filter(fid => fid !== id) }};
          } else {
-           return { favorites: { ...state.favorites, [section]: [...secFavs, id] }};
+           return { favorites: { ...currentFavorites, [section]: [...secFavs, id] }};
          }
       }),
 

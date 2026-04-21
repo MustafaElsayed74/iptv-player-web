@@ -66,8 +66,8 @@ export default function ChannelGrid() {
               >
                 <Heart 
                   size={18} 
-                  color={favorites.live?.includes(channel.id) ? '#ef4444' : '#fff'}
-                  fill={favorites.live?.includes(channel.id) ? '#ef4444' : 'rgba(0,0,0,0.5)'}
+                  color={(favorites || {}).live?.includes(channel.id) ? '#ef4444' : '#fff'}
+                  fill={(favorites || {}).live?.includes(channel.id) ? '#ef4444' : 'rgba(0,0,0,0.5)'}
                 />
               </button>
             </div>
