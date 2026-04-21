@@ -6,31 +6,22 @@ import usePlaylistStore from '../store/PlaylistStore';
 import { useState, useEffect } from 'react';
 
 export default function ChannelGrid() {
-  const { getFilteredChannels, setActiveChannel, activeChannel, toggleFavorite, favorites } = usePlaylistStore();
+  const { getFilteredChannels, setActiveChannel, activeChannel, toggleFavorite, favorites, globalSearchQuery } = usePlaylistStore();
   const channels = getFilteredChannels();
-  const [searchQuery, setSearchQuery] = useState('');
   const [displayLimit, setDisplayLimit] = useState(100);
 
-  const filteredChannels = channels.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredChannels = channels.filter(c => c.name.toLowerCase().includes(globalSearchQuery.toLowerCase()));
   const displayedChannels = filteredChannels.slice(0, displayLimit);
 
   // Reset limit when search changes
   useEffect(() => { 
     setDisplayLimit(100); 
-  }, [searchQuery, getFilteredChannels]);
+  }, [globalSearchQuery, getFilteredChannels]);
 
   return (
     <div style={styles.container}>
-      <div style={{marginBottom: '1.5rem'}}>
-        <input 
-          style={styles.searchInput}
-          type="text" 
-          placeholder="Search channels..." 
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
       <div style={styles.grid}>
+        {displayedChannels.map((channel, index) => (
         {displayedChannels.map((channel, index) => (
           <div 
             key={`${channel.id}-${index}`} 

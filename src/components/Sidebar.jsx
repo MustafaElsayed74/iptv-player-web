@@ -8,6 +8,7 @@ export default function Sidebar() {
     groups, vodGroups, seriesGroups, 
     activeGroup, setActiveGroup, 
     activeSection, setActiveSection,
+    globalSearchQuery, setGlobalSearchQuery,
     clearPlaylist, channels, xtreamCredentials 
   } = usePlaylistStore();
 
@@ -26,6 +27,16 @@ export default function Sidebar() {
       <div style={styles.header}>
         <MonitorPlay size={28} color="var(--accent-color)" />
         <h1 style={styles.brand}>IPTV</h1>
+      </div>
+
+      <div style={styles.searchContainer}>
+        <input 
+          type="text"
+          placeholder="Global Search..."
+          value={globalSearchQuery}
+          onChange={(e) => setGlobalSearchQuery(e.target.value)}
+          style={styles.sidebarSearch}
+        />
       </div>
 
       <div style={styles.sectionsNav}>
@@ -120,6 +131,19 @@ const styles = {
     fontSize: '1.25rem',
     fontWeight: '700',
     letterSpacing: '-0.025em',
+  },
+  searchContainer: {
+    padding: '1.5rem 1.5rem 0 1.5rem',
+  },
+  sidebarSearch: {
+    width: '100%',
+    padding: '0.65rem 1rem',
+    borderRadius: 'var(--radius-md)',
+    background: 'var(--bg-surface)',
+    border: '1px solid var(--glass-border)',
+    color: 'var(--text-primary)',
+    outline: 'none',
+    fontSize: '0.875rem',
   },
   sectionsNav: {
     padding: '1.5rem 1.5rem 0 1.5rem',

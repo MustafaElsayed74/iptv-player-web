@@ -5,13 +5,17 @@ import usePlaylistStore from '../store/PlaylistStore';
 import { useState } from 'react';
 
 export default function SeriesView() {
-  const { getFilteredChannels, setActiveMediaItem, activeMediaItem, xtreamCredentials, setSeries, toggleFavorite, favorites } = usePlaylistStore();
+  const { getFilteredChannels, setActiveMediaItem, activeMediaItem, xtreamCredentials, setSeries, toggleFavorite, favorites, globalSearchQuery } = usePlaylistStore();
   const seriesList = getFilteredChannels(); // Uses PlaylistStore activeSection logic
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [displayLimit, setDisplayLimit] = useState(100);
 
-  const displayedSeries = seriesList.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const displayedSeries = seriesList.filter(s => s.name.toLowerCase().includes(globalSearchQuery.toLowerCase())).slice(0, displayLimit);
+
+  useEffect(() => { 
+    setDisplayLimit(100); 
+  }, [globalSearchQuery, getFilteredChannels]);
 
   const fetchSeries = async () => {
     if (!xtreamCredentials) return;
@@ -77,16 +81,8 @@ export default function SeriesView() {
         </div>
       ) : (
         <>
-          <div style={{marginBottom: '1.5rem'}}>
-            <input 
-              style={styles.searchInput}
-              type="text" 
-              placeholder="Search series..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
           <div style={styles.grid}>
+            {displayedSeries.map((seriesItem, index) => (
             {displayedSeries.map((seriesItem, index) => (
             <div 
               key={`${seriesItem.id}-${index}`} 

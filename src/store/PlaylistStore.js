@@ -18,6 +18,7 @@ const usePlaylistStore = create(
       activeMediaItem: null, // Selected media for MediaDetailView
       activeViewMode: 'grid', // 'grid', 'detail'
       activeGroup: 'All',
+      globalSearchQuery: '',
       
       xtreamCredentials: null,
 
@@ -60,9 +61,12 @@ const usePlaylistStore = create(
       
       setActiveGroup: (group) => set({ activeGroup: group }),
       
+      setGlobalSearchQuery: (query) => set({ globalSearchQuery: query }),
+      
       clearPlaylist: () => set({ 
         channels: [], groups: [], vods: [], vodGroups: [], series: [], seriesGroups: [],
         activeChannel: null, activeMediaItem: null, activeGroup: 'All', activeViewMode: 'grid', xtreamCredentials: null,
+        globalSearchQuery: '',
         favorites: { live: [], movies: [], series: [] },
         customLists: [], watchHistory: [], resumeProgress: {}, activeSection: 'live'
       }),
