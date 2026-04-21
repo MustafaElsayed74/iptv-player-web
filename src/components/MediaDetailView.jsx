@@ -213,7 +213,7 @@ export default function MediaDetailView() {
                         </div>
                       </div>
                       <div style={styles.epInfo}>
-                        <h4 style={styles.epTitle}>{ep.title || \`Episode \${ep.episode_num || i + 1}\`}</h4>
+                        <h4 style={styles.epTitle}>{ep.title || `Episode ${ep.episode_num || i + 1}`}</h4>
                         {ep.info?.duration && <span style={styles.epDuration}>{ep.info.duration}</span>}
                       </div>
                     </div>
