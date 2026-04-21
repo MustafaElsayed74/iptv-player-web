@@ -52,6 +52,7 @@ export async function GET(req) {
           if (uriMatch) {
             let absoluteUri = uriMatch[1];
             if (!absoluteUri.startsWith('http')) {
+              // Create absolute URL by appending to the base URL of the M3U8
               absoluteUri = new URL(absoluteUri, finalUrlObj.href).href;
             }
             const proxiedUri = `/api/stream?url=${encodeURIComponent(absoluteUri)}`;
@@ -63,11 +64,17 @@ export async function GET(req) {
         // Handle variant playlist or .ts chunk paths
         let absoluteUri = trimmed;
         if (!trimmed.startsWith('http')) {
+           // Ensure relative paths correctly bind to the M3U8 folder, not the root
            absoluteUri = new URL(trimmed, finalUrlObj.href).href;
         }
 
+        // Add the file extension hint so VideoPlayer can correctly identify it
+        let extParams = '';
+        if (absoluteUri.includes('.m3u8')) extParams = '&ext=.m3u8';
+        else if (absoluteUri.includes('.ts')) extParams = '&ext=.ts';
+
         // Rewrite chunk strictly back to this proxy
-        return `/api/stream?url=${encodeURIComponent(absoluteUri)}`;
+        return `/api/stream?url=${encodeURIComponent(absoluteUri)}${extParams}`;
       }).join('\n');
 
       return new Response(rewrittenText, {
